@@ -2,6 +2,14 @@
 
 A real-time ambient ocean canvas. The sky color, sun/moon position, moon phase, and tide direction are computed from your chosen city's actual time and lunar transit — every pixel is driven by SunCalc, not pre-rendered.
 
+<p align="center">
+  <img src="docs/preview/hangzhou.png" width="32%" alt="Hangzhou 杭州 — pre-dawn" />
+  <img src="docs/preview/tokyo.png"     width="32%" alt="Tokyo — sunrise with moon still in sky" />
+  <img src="docs/preview/nyc.png"       width="32%" alt="New York — dusk" />
+</p>
+
+<p align="center"><em>Same moment, three timezones — Hangzhou pre-dawn · Tokyo sunrise (sun and moon both up) · New York dusk.</em></p>
+
 **Live**: [tide-pixels-2026-05-06.vercel.app](https://tide-pixels-2026-05-06.vercel.app)
 
 Open it in a browser tab, or set it as a Mac desktop wallpaper via [Plash](https://sindresorhus.com/plash) and watch your cities' tides over the day.
