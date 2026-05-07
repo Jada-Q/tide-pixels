@@ -85,6 +85,7 @@ For multi-display: assign different cities per monitor (Tokyo on one, NYC on ano
 - [Sky Traffic](https://github.com/Jada-Q/sky-traffic) — live aircraft trails over your city's airspace
 - [Bay Ships](https://github.com/Jada-Q/bay-ships) — ship lanes through major harbors (procedural demo)
 - [Subway Pulse](https://github.com/Jada-Q/subway-pulse) — Tokyo metro lines as Beck-style abstract diagram (procedural demo)
+- [Quake Globe](https://github.com/Jada-Q/quake-globe) — live global earthquakes from USGS as ringing light pulses
 
 ---
 

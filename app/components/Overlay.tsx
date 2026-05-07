@@ -53,7 +53,7 @@ export default function Overlay({ location }: { location: Location }) {
           {formatCoord(location.lng, false)}
         </div>
         <div className="mt-3 whitespace-nowrap text-[11px] italic opacity-45">
-          — also Sky Traffic · Bay Ships · Subway Pulse
+          — also Sky Traffic · Bay Ships · Subway Pulse · Quake Globe
         </div>
       </div>
 
