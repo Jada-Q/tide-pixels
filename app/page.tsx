@@ -1,7 +1,7 @@
 import TideCanvas from "./components/TideCanvas";
 import Overlay from "./components/Overlay";
 import CitySwitcher from "./components/CitySwitcher";
-import NagiCaption from "./components/NagiCaption";
+import NagiSprite from "./components/NagiSprite";
 import { resolveLocation, type UrlParams } from "@/lib/locations";
 
 export default async function Home({
@@ -25,7 +25,7 @@ export default async function Home({
       <TideCanvas location={location} />
       <Overlay location={location} />
       <CitySwitcher active={activeKey} />
-      <NagiCaption />
+      <NagiSprite />
     </main>
   );
 }
