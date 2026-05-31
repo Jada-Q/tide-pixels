@@ -1,13 +1,21 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { getSkyPalette, type SkyPalette } from "@/lib/sky";
+import { getSkyPalette, applyWeatherModifier, type SkyPalette } from "@/lib/sky";
 import { getTideState, getMoonInfo, getSunInfo } from "@/lib/tide";
 import type { Location } from "@/lib/locations";
+import { useWeather } from "./WeatherProvider";
+import { classifyWeather, type Weather } from "@/lib/weather";
 
 export default function TideCanvas({ location }: { location: Location }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
+  const weather = useWeather();
+  const weatherRef = useRef<Weather | null>(weather);
+
+  useEffect(() => {
+    weatherRef.current = weather;
+  }, [weather]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,7 +47,15 @@ export default function TideCanvas({ location }: { location: Location }) {
     const draw = (now: number) => {
       const t = (now - start) / 1000;
       const date = new Date();
-      const palette = getSkyPalette(date, location.timezone);
+      const basePalette = getSkyPalette(date, location.timezone);
+      const wx = weatherRef.current;
+      const palette = wx
+        ? applyWeatherModifier(
+            basePalette,
+            classifyWeather(wx.weather[0]?.id ?? 800),
+            wx.clouds?.all ?? 0,
+          )
+        : basePalette;
       const tide = getTideState(date, location.lat, location.lng);
       const moon = getMoonInfo(date, location.lat, location.lng);
       const sun = getSunInfo(date, location.lat, location.lng);

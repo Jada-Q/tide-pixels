@@ -1,3 +1,5 @@
+import type { WeatherKind } from "./weather";
+
 export interface SkyPalette {
   top: string;
   mid: string;
@@ -155,6 +157,94 @@ function getLocalHour(date: Date, timezone: string): number {
     // Fallback to UTC if timezone is invalid
     return (date.getUTCHours() + date.getUTCMinutes() / 60) % 24;
   }
+}
+
+export function applyWeatherModifier(
+  palette: SkyPalette,
+  kind: WeatherKind,
+  cloudPct: number,
+): SkyPalette {
+  if (kind === "clear") return palette;
+
+  const intensity = kind === "clouds" ? Math.min(1, cloudPct / 100) : 1;
+
+  let desat = 0;
+  let darken = 0;
+  let blueShift = 0;
+
+  switch (kind) {
+    case "clouds":
+      desat = 0.3 * intensity;
+      darken = 0.2 * intensity;
+      break;
+    case "rain":
+    case "thunder":
+      desat = 0.3;
+      darken = 0.2;
+      blueShift = -0.2;
+      break;
+    case "snow":
+      desat = 0.4;
+      darken = 0.05;
+      break;
+    case "fog":
+      desat = 0.5;
+      darken = 0.15;
+      break;
+  }
+
+  return {
+    top: shiftColor(palette.top, desat, darken, blueShift),
+    mid: shiftColor(palette.mid, desat, darken, blueShift),
+    horizon: shiftColor(
+      palette.horizon,
+      desat * 0.7,
+      darken * 0.7,
+      blueShift * 0.5,
+    ),
+    sea: shiftColor(palette.sea, desat * 0.5, darken * 0.5, blueShift * 0.5),
+    seaDeep: palette.seaDeep,
+    foam: shiftColor(palette.foam, desat * 0.5, 0, 0),
+  };
+}
+
+function shiftColor(
+  hex: string,
+  desat: number,
+  darken: number,
+  blueShift: number,
+): string {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+
+  const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+  r = r + (gray - r) * desat;
+  g = g + (gray - g) * desat;
+  b = b + (gray - b) * desat;
+
+  r *= 1 - darken;
+  g *= 1 - darken;
+  b *= 1 - darken;
+
+  if (blueShift !== 0) {
+    const amt = Math.abs(blueShift) * 30;
+    if (blueShift < 0) {
+      r -= amt * 0.5;
+      b += amt;
+    } else {
+      r += amt;
+      b -= amt * 0.5;
+    }
+  }
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function toHex(n: number): string {
+  return Math.max(0, Math.min(255, Math.round(n)))
+    .toString(16)
+    .padStart(2, "0");
 }
 
 function lerpColor(a: string, b: string, t: number): string {
