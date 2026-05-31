@@ -40,6 +40,7 @@ The bottom dot row (right side on mobile) lets you switch between cities live.
 - **Moon phase** — `SunCalc.getMoonIllumination`. Drawn as a half-disc + terminator ellipse, waxing right-lit / waning left-lit.
 - **Tide** — approximated from the moon's upper/lower transit times (rise/set midpoint), interpolated as a `cos` wave between two consecutive peaks. Polar-region fallback uses a simple semi-diurnal sine.
 - **Stars & meteors** — 60 deterministic stars seeded from a fixed RNG (so the field is stable across reloads). Fade in as `sun.altitude` drops below the horizon. A meteor spawns every 30–90 seconds during full night, fades in/out over ~1.2 s.
+- **Weather** *(live)* — current conditions from [OpenWeather](https://openweathermap.org/api), cached 10 min at the edge. Drives three subtle layers: sky desaturation/darken by cloud cover, cold tint for rain, particle overlay (rain streaks / snow drift / fog) for active precipitation. Disable with `?weather=off`. Sun/moon/tide remain SunCalc-driven and offline-deterministic.
 
 The art-piece label at the bottom-right says it: *"Tides estimated from lunar transit times — artistic approximation, not measured data."*
 
@@ -52,6 +53,7 @@ The art-piece label at the bottom-right says it: *"Tides estimated from lunar tr
 - Cormorant Garamond + Geist Mono (`next/font/google`)
 - [`suncalc`](https://github.com/mourner/suncalc)
 - Plain Canvas 2D + RAF — no external animation library
+- OpenWeather Current Weather API (server-side proxy via `/api/weather`)
 
 ---
 

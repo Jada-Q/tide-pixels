@@ -19,6 +19,12 @@ export async function GET(req: NextRequest) {
       { status: 400 },
     );
   }
+  if (latN < -90 || latN > 90 || lngN < -180 || lngN > 180) {
+    return Response.json(
+      { error: "lat must be in [-90,90], lng in [-180,180]" },
+      { status: 400 },
+    );
+  }
 
   try {
     const data = await fetchWeather(latN, lngN);
