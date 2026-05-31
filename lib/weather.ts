@@ -64,3 +64,64 @@ export function windCompass(deg: number): string {
   const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
   return dirs[Math.round(((deg % 360) / 45)) % 8];
 }
+
+// Dev/QA helper: synthesize a weather payload for a target condition,
+// preserving lat/lng-derived fields from a real response when available.
+export function synthWeather(kind: string, base?: Weather | null): Weather {
+  const seed: Weather = base ?? {
+    weather: [],
+    main: { temp: 15, feels_like: 14, humidity: 70, pressure: 1013 },
+    clouds: { all: 50 },
+    wind: { speed: 5, deg: 180 },
+    visibility: 10000,
+    dt: Math.floor(Date.now() / 1000),
+  };
+  const PRESETS: Record<string, Partial<Weather>> = {
+    rain: {
+      weather: [
+        { id: 502, main: "Rain", description: "heavy intensity rain", icon: "10d" },
+      ],
+      clouds: { all: 95 },
+      rain: { "1h": 6 },
+      wind: { speed: 9, deg: 200 },
+      visibility: 4000,
+    },
+    drizzle: {
+      weather: [
+        { id: 300, main: "Drizzle", description: "light drizzle", icon: "09d" },
+      ],
+      clouds: { all: 85 },
+      rain: { "1h": 0.5 },
+      visibility: 7000,
+    },
+    snow: {
+      weather: [
+        { id: 601, main: "Snow", description: "snow", icon: "13d" },
+      ],
+      clouds: { all: 90 },
+      snow: { "1h": 2 },
+      wind: { speed: 3, deg: 0 },
+      visibility: 5000,
+    },
+    fog: {
+      weather: [{ id: 741, main: "Fog", description: "fog", icon: "50d" }],
+      clouds: { all: 100 },
+      visibility: 1500,
+    },
+    thunder: {
+      weather: [
+        { id: 211, main: "Thunderstorm", description: "thunderstorm", icon: "11d" },
+      ],
+      clouds: { all: 100 },
+      rain: { "1h": 8 },
+      wind: { speed: 14, deg: 240 },
+      visibility: 2500,
+    },
+    clear: {
+      weather: [{ id: 800, main: "Clear", description: "clear sky", icon: "01d" }],
+      clouds: { all: 0 },
+    },
+  };
+  const patch = PRESETS[kind] ?? {};
+  return { ...seed, ...patch };
+}

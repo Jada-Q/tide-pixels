@@ -3,8 +3,9 @@ import Overlay from "./components/Overlay";
 import CitySwitcher from "./components/CitySwitcher";
 import NagiSprite from "./components/NagiSprite";
 import { WeatherProvider } from "./components/WeatherProvider";
+import WeatherParticles from "./components/WeatherParticles";
 import { resolveLocation, type UrlParams } from "@/lib/locations";
-import { fetchWeather, type Weather } from "@/lib/weather";
+import { fetchWeather, synthWeather, type Weather } from "@/lib/weather";
 
 export default async function Home({
   searchParams,
@@ -23,11 +24,15 @@ export default async function Home({
   const activeKey = (params.c?.toLowerCase()) || (params.lat ? "" : "tokyo");
 
   const weatherDisabled = pickString(raw.weather) === "off";
+  const testKind = pickString(raw.test);
   let initialWeather: Weather | null = null;
   if (!weatherDisabled) {
     initialWeather = await fetchWeather(location.lat, location.lng).catch(
       () => null,
     );
+    if (testKind) {
+      initialWeather = synthWeather(testKind, initialWeather);
+    }
   }
 
   return (
@@ -35,9 +40,10 @@ export default async function Home({
       <WeatherProvider
         initialWeather={initialWeather}
         location={location}
-        enabled={!weatherDisabled}
+        enabled={!weatherDisabled && !testKind}
       >
         <TideCanvas location={location} />
+        <WeatherParticles />
         <Overlay location={location} />
       </WeatherProvider>
       <CitySwitcher active={activeKey} />
