@@ -2,7 +2,9 @@ import TideCanvas from "./components/TideCanvas";
 import Overlay from "./components/Overlay";
 import CitySwitcher from "./components/CitySwitcher";
 import NagiSprite from "./components/NagiSprite";
+import { WeatherProvider } from "./components/WeatherProvider";
 import { resolveLocation, type UrlParams } from "@/lib/locations";
+import { fetchWeather, type Weather } from "@/lib/weather";
 
 export default async function Home({
   searchParams,
@@ -20,10 +22,24 @@ export default async function Home({
   const location = resolveLocation(params);
   const activeKey = (params.c?.toLowerCase()) || (params.lat ? "" : "tokyo");
 
+  const weatherDisabled = pickString(raw.weather) === "off";
+  let initialWeather: Weather | null = null;
+  if (!weatherDisabled) {
+    initialWeather = await fetchWeather(location.lat, location.lng).catch(
+      () => null,
+    );
+  }
+
   return (
     <main className="relative h-screen w-screen overflow-hidden">
-      <TideCanvas location={location} />
-      <Overlay location={location} />
+      <WeatherProvider
+        initialWeather={initialWeather}
+        location={location}
+        enabled={!weatherDisabled}
+      >
+        <TideCanvas location={location} />
+        <Overlay location={location} />
+      </WeatherProvider>
       <CitySwitcher active={activeKey} />
       <NagiSprite />
     </main>

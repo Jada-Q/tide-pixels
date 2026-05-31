@@ -8,9 +8,12 @@ import {
   moonPhaseLabel,
 } from "@/lib/tide";
 import type { Location } from "@/lib/locations";
+import { useWeather } from "./WeatherProvider";
+import { windCompass } from "@/lib/weather";
 
 export default function Overlay({ location }: { location: Location }) {
   const [now, setNow] = useState<Date | null>(null);
+  const weather = useWeather();
 
   useEffect(() => {
     setNow(new Date());
@@ -65,6 +68,21 @@ export default function Overlay({ location }: { location: Location }) {
           {dateStr} {tzAbbr}
         </div>
       </div>
+
+      {weather && (
+        <div className="absolute left-1/2 top-6 -translate-x-1/2 text-center font-serif md:top-10">
+          <div className="text-[10px] uppercase tracking-[0.3em] opacity-50">
+            Weather
+          </div>
+          <div className="mt-1 whitespace-nowrap text-sm tracking-wide">
+            {Math.round(weather.main.temp)}°C
+            <span className="mx-2 opacity-40">·</span>
+            {weather.weather[0]?.description ?? "—"}
+            <span className="mx-2 opacity-40">·</span>
+            {weather.wind.speed.toFixed(1)} m/s {windCompass(weather.wind.deg)}
+          </div>
+        </div>
+      )}
 
       <div className="absolute bottom-6 left-6 space-y-3 font-serif md:bottom-10 md:left-10">
         <Row label="潮位" value={`${phaseLabel(tide.phase)} ${tideArrow}`} sub={`次の転換まで ${tide.nextTransitMinutes} 分`} />
