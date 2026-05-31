@@ -70,7 +70,7 @@ export default function Overlay({ location }: { location: Location }) {
       </div>
 
       {weather && (
-        <div className="absolute left-1/2 top-6 -translate-x-1/2 text-center font-serif md:top-10">
+        <div className="absolute left-1/2 top-10 hidden -translate-x-1/2 text-center font-serif md:block">
           <div className="text-[10px] uppercase tracking-[0.3em] opacity-50">
             Weather
           </div>
