@@ -1,6 +1,7 @@
 import TideCanvas from "./components/TideCanvas";
 import Overlay from "./components/Overlay";
 import CitySwitcher from "./components/CitySwitcher";
+import Bgm from "./components/Bgm";
 import NagiSprite from "./components/NagiSprite";
 import { WeatherProvider } from "./components/WeatherProvider";
 import WeatherParticles from "./components/WeatherParticles";
@@ -47,6 +48,7 @@ export default async function Home({
         <Overlay location={location} />
       </WeatherProvider>
       <CitySwitcher active={activeKey} />
+      <Bgm location={location} variant={activeKey || location.label} />
       <NagiSprite />
     </main>
   );
